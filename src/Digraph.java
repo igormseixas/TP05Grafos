@@ -41,6 +41,7 @@ public class Digraph {
         //Mark all the vertices as not visited
         int j = 0;
         boolean visited[ ] = new boolean[n];
+        this.parent = new int[n];
 
         // BFS Queue
         LinkedList<Integer> queue = new LinkedList<>( );
@@ -53,10 +54,9 @@ public class Digraph {
         while (queue.size( ) != 0){
             //Dequeue a vertex and print to check
             int u = queue.poll( );
-            System.out.println(u+" ");
 
             //Start BFS with adjacent neighbors
-            for(int i=0; i<n; i++){
+            for(int i=0; i<digraph.length; i++){
                 if(visited[i]==false && digraph[u][i] > 0){
                     queue.add(i);
                     parent[i] = u;
@@ -85,8 +85,9 @@ public class Digraph {
         System.out.println("Following is Breadth First Traversal "+
                 "(starting from vertex 2)");
 
-        g.BFS(2,1);
-        g.BFS(0,2);
-        g.BFS(2,3);
+        System.out.println(g.BFS(0,3));
+        System.out.println(g.BFS(2,1));
+        System.out.println(g.BFS(0,2));
+        System.out.println(g.BFS(2,3));
     }
 }

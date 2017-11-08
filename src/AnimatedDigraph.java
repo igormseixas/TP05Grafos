@@ -1,9 +1,10 @@
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.scalags.graph.MultiGraph;
 
 import java.util.LinkedList;
 
-public class Digraph {
+public class AnimatedDigraph {
     public int[ ][ ] digraph;
     public int[ ] parent;
     Graph displayGraph;
@@ -12,7 +13,7 @@ public class Digraph {
      *
      * @param length
      */
-    public Digraph(int length ){
+    public AnimatedDigraph(int length ){
         this.digraph = new int[length][length];
 
         for(int i=0; i<length;i++){
@@ -21,6 +22,8 @@ public class Digraph {
             }
         }
 
+        displayGraph = new MultiGraph("Digraph");
+        displayGraph.display();
     }
 
     /**
@@ -33,6 +36,32 @@ public class Digraph {
 
         this.digraph[source][terminal] = weight;
 
+        try{
+            displayGraph.addNode(""+source);
+            displayGraph.getNode(""+source).addAttribute("ui.label", source);
+            sleep();
+        } catch (IdAlreadyInUseException iaiue){
+
+        }
+
+        try{
+            displayGraph.addNode(""+terminal);
+            displayGraph.getNode(""+terminal).addAttribute("ui.label", terminal);
+            sleep();
+        } catch (IdAlreadyInUseException iaiue){
+
+        }
+
+        try{
+            displayGraph.addEdge(""+source+terminal,""+source,""+terminal,true);
+            displayGraph.getEdge(""+source+terminal).setAttribute("weight",weight);
+            displayGraph.getEdge(""+source+terminal).addAttribute("ui.label", weight);
+            sleep();
+        }catch (IdAlreadyInUseException iaiue){
+
+        }
+
+        System.out.println(""+source+terminal);
     }
 
     /**
@@ -73,7 +102,7 @@ public class Digraph {
     }
 
     /**
-     * 
+     *
      * @param source
      * @param terminal
      * @return
@@ -102,10 +131,17 @@ public class Digraph {
 
     /**
      *
+     */
+    protected static void sleep() {
+        try { Thread.sleep(1000); } catch (Exception e) {}
+    }
+
+    /**
+     *
      * @param args
      */
     public static void main(String[ ] args){
-        Digraph g = new Digraph(4);
+        AnimatedDigraph g = new AnimatedDigraph(4);
 
         g.addEdge(0, 1, 1);
         g.addEdge(1, 2, 4);
@@ -128,7 +164,7 @@ public class Digraph {
         g.digraph = graph;
         System.out.println("Max Flow "+ g.FordFulkerson(0,5));
 
-        Digraph g2 = new Digraph(4);
+        AnimatedDigraph g2 = new AnimatedDigraph(4);
         g2.addEdge(0,1,10);
         g2.addEdge(0,2,10);
         g2.addEdge(1,2,1);

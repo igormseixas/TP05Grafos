@@ -3,7 +3,6 @@ import java.util.LinkedList;
 public class Digraph {
     public int[ ][ ] digraph;
     public int[ ] parent;
-    public int n; // number of vertex
 
     /**
      *
@@ -11,7 +10,6 @@ public class Digraph {
      */
     public Digraph(int length ){
         this.digraph = new int[length][length];
-        this.n = 0;
 
         for(int i=0; i<length;i++){
             for(int j=0; j<length; j++){
@@ -28,7 +26,6 @@ public class Digraph {
      */
     public void addEdge(int source, int terminal, int weight) {
         this.digraph[source][terminal] = weight;
-        n++;
     }
 
     /**
@@ -40,8 +37,8 @@ public class Digraph {
     public boolean BFS (int source, int terminal){
         //Mark all the vertices as not visited
         int j = 0;
-        boolean visited[ ] = new boolean[n];
-        this.parent = new int[n];
+        boolean visited[ ] = new boolean[digraph.length];
+        this.parent = new int[digraph.length];
 
         // BFS Queue
         LinkedList<Integer> queue = new LinkedList<>( );
@@ -69,6 +66,34 @@ public class Digraph {
     }
 
     /**
+     * 
+     * @param source
+     * @param terminal
+     * @return
+     */
+    public int FordFulkerson (int source , int terminal) {
+
+        int fluxoMaximo = 0;
+
+        while(BFS(source,terminal)) {
+            int numeroMuitoGrande = Integer.MAX_VALUE;
+
+            for(int i = terminal; i != source; i = parent[i]) {
+                numeroMuitoGrande = Math.min(numeroMuitoGrande,digraph[parent[i]][i]);
+            }
+
+            for(int i = terminal; i != source; i = parent[i]) {
+                digraph[parent[i]][i] -= numeroMuitoGrande;
+                digraph[i][parent[i]] += numeroMuitoGrande;
+            }
+
+            fluxoMaximo += numeroMuitoGrande;
+        }
+
+        return fluxoMaximo;
+    }
+
+    /**
      *
      * @param args
      */
@@ -76,18 +101,24 @@ public class Digraph {
         Digraph g = new Digraph(4);
 
         g.addEdge(0, 1, 1);
-        g.addEdge(0, 2, 3);
         g.addEdge(1, 2, 4);
-        g.addEdge(2, 0, 5);
-        g.addEdge(2, 3, 6);
-        g.addEdge(3, 3, 1);
 
-        System.out.println("Following is Breadth First Traversal "+
-                "(starting from vertex 2)");
 
         System.out.println(g.BFS(0,3));
         System.out.println(g.BFS(2,1));
         System.out.println(g.BFS(0,2));
         System.out.println(g.BFS(2,3));
+
+        int graph[][] =new int[][] {
+                {0, 16, 13, 0, 0, 0},
+                {0, 0, 10, 12, 0, 0},
+                {0, 4, 0, 0, 14, 0},
+                {0, 0, 9, 0, 0, 20},
+                {0, 0, 0, 7, 0, 4},
+                {0, 0, 0, 0, 0, 0}
+        };
+
+        g.digraph = graph;
+        System.out.println("Max Flow "+ g.FordFulkerson(0,5));
     }
 }

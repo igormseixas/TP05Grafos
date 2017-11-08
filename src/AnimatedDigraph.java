@@ -22,7 +22,12 @@ public class AnimatedDigraph {
             }
         }
 
+        //Building Graphic Interface
+        System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         displayGraph = new MultiGraph("Digraph");
+        displayGraph.addAttribute("ui.stylesheet", "url('stylesheet')");
+        displayGraph.addAttribute("ui.quality");
+        displayGraph.addAttribute("ui.antialias");
         displayGraph.display();
     }
 
@@ -109,6 +114,12 @@ public class AnimatedDigraph {
      */
     public int FordFulkerson (int source , int terminal) {
 
+        //Color the Source and terminal
+
+        displayGraph.getNode(""+source).setAttribute("ui.class", "marked");
+        sleep();
+        displayGraph.getNode(""+terminal).setAttribute("ui.class", "marked");
+
         int fluxoMaximo = 0;
 
         while(BFS(source,terminal)) {
@@ -116,11 +127,13 @@ public class AnimatedDigraph {
 
             for(int i = terminal; i != source; i = parent[i]) {
                 numeroMuitoGrande = Math.min(numeroMuitoGrande,digraph[parent[i]][i]);
+                System.out.println(""+numeroMuitoGrande);
             }
 
             for(int i = terminal; i != source; i = parent[i]) {
                 digraph[parent[i]][i] -= numeroMuitoGrande;
                 digraph[i][parent[i]] += numeroMuitoGrande;
+                System.out.println(""+numeroMuitoGrande);
             }
 
             fluxoMaximo += numeroMuitoGrande;
@@ -137,32 +150,21 @@ public class AnimatedDigraph {
     }
 
     /**
+    protected String styleSheet =
+            "node {" +
+                    "	fill-color: black;" +
+                    "}" +
+                    "node.marked {" +
+                    "	fill-color: red;" +
+                    "}";
+     */
+
+    /**
      *
      * @param args
      */
     public static void main(String[ ] args){
         AnimatedDigraph g = new AnimatedDigraph(4);
-
-        g.addEdge(0, 1, 1);
-        g.addEdge(1, 2, 4);
-
-
-        System.out.println(g.BFS(0,3));
-        System.out.println(g.BFS(2,1));
-        System.out.println(g.BFS(0,2));
-        System.out.println(g.BFS(2,3));
-
-        int graph[][] =new int[][] {
-                {0, 16, 13, 0, 0, 0},
-                {0, 0, 10, 12, 0, 0},
-                {0, 4, 0, 0, 14, 0},
-                {0, 0, 9, 0, 0, 20},
-                {0, 0, 0, 7, 0, 4},
-                {0, 0, 0, 0, 0, 0}
-        };
-
-        g.digraph = graph;
-        System.out.println("Max Flow "+ g.FordFulkerson(0,5));
 
         AnimatedDigraph g2 = new AnimatedDigraph(4);
         g2.addEdge(0,1,10);

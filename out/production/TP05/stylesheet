@@ -1,0 +1,5 @@
+node { size: 40px; text-size: 20px; fill-color: black, white; fill-mode: gradient-diagonal2; }
+
+node.marked { size: 40px; text-size: 20px; fill-color: red, orange; fill-mode: gradient-diagonal2; }
+
+edge { text-alignment: above; fill-color: #333; size: 3px; text-size: 20px;}
